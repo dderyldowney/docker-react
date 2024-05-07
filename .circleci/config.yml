@@ -13,7 +13,7 @@ orbs:
 jobs:
   build_image:
     docker:
-      - image: node:22.1.0-alpine
+      - image: cimg/node:lts
     resource_class: small
     steps:
       - checkout
