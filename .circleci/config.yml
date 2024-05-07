@@ -12,13 +12,13 @@ orbs:
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
 jobs:
   build:
-    machine:
-      image: cimg/node:lts
-      steps:
-        - checkout
-        - setup_remote_docker:
-            docker_layer_caching: true
-        - run: docker build -f Dockerfile.dev .
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: docker build -f Dockerfile.dev .
           
   npm_run_test:
     docker:
@@ -34,5 +34,6 @@ jobs:
 workflows:
   test_react_app:
     jobs:
+      - build
       - npm_run_test
 
