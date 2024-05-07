@@ -11,7 +11,7 @@ orbs:
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
 jobs:
-  test:
+  npm_run_test:
     executor: node/default
     steps:
       - checkout
@@ -20,4 +20,8 @@ jobs:
       - run:
           command: npm run test
           name: Run tests
+workflows:
+  test_my_app:
+    jobs:
+      - npm_run_test
 
