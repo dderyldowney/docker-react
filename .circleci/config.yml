@@ -11,18 +11,19 @@ orbs:
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
 jobs:
-  build:
+  build_image:
     docker:
       - image: cimg/node:lts
+    resource_class: small
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: docker build -f Dockerfile.dev .
+      - run: docker build -t dderyldowney/docker-react:latest -f Dockerfile.dev .
           
   npm_run_test:
     docker:
-      - image: cimg/node:lts
+      - image: dderyldowney/docker-react:latest
     resource_class: small
     steps:
       - checkout
@@ -30,10 +31,20 @@ jobs:
           pkg-manager: npm
       - run:
           command: npm run test
-          name: Run tests
+  
+  npm_run_build:
+    docker:
+      - image: dderyldowney/docker-react:latest
+    resource_class: small
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run: npm run build
+
 workflows:
   test_react_app:
     jobs:
-      - build
+      - build_image
       - npm_run_test
-
+      - npm_run_build
