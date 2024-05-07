@@ -42,9 +42,17 @@ jobs:
           pkg-manager: npm
       - run: npm run build
 
+  self_hosted_runner:
+    docker:
+      - image: cimg/base:current
+    resource_class: undefined
+    steps:
+      - run: echo "Hi I'm on a Container Runner!"
+
 workflows:
   test_react_app:
     jobs:
+      - self_hosted_runner
       - build_image
       - npm_run_test
       - npm_run_build
