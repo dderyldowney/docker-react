@@ -13,7 +13,7 @@ orbs:
 jobs:
   build:
     machine:
-      image: node:lts
+      image: cimg/node:lts
       steps:
         - checkout
         - setup_remote_docker:
