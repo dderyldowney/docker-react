@@ -21,13 +21,13 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: docker login --username ${DOCKER_USER} --password ${GITHUB_TOKEN} ${DOCKER_REPO}
-      - run: docker build --tag ghcr.io/${DOCKER_USER}/docker-react:circleci -f Dockerfile.dev .
-      - run: docker push ${DOCKER_REPO}/${DOCKER_USER}/docker-react:circleci
+      - run: docker login --username ${DOCKER_USER} --password ${DOCKER_PASS}
+      - run: docker build --tag ${DOCKER_USER}/docker-react:circleci -f Dockerfile.dev .
+      - run: docker push ${DOCKER_USER}/docker-react:circleci
 
   npm_run_test:
     docker:
-      - image: ${DOCKER_REPO}/${DOCKER_USER}/docker-react:circleci
+      - image: ${DOCKER_USER}/docker-react:circleci
     resource_class: small
     steps:
       - checkout
@@ -38,7 +38,7 @@ jobs:
   
   npm_run_build:
     docker:
-      - image: ${DOCKER_REPO}/${DOCKER_USER}/docker-react:circleci
+      - image: ${DOCKER_USER}/docker-react:circleci
     resource_class: small
     steps:
       - checkout
