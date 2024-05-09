@@ -119,4 +119,3 @@ I see, you want to use a Docker image as the base for your EC2 instance, essenti
 7. **Launch an EC2 Instance from the Custom AMI**: Once the custom AMI is created, you can launch EC2 instances from it just like you would with any other AMI. The instances will be pre-configured with the environment and configuration specified in the Docker image.
 
 That's it! You've now deployed a Docker image as an EC2 instance by creating a custom AMI from the Docker image. This approach allows you to leverage the flexibility and portability of Docker images while using them as the basis for your EC2 instances.
-
