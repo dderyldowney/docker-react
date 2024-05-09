@@ -6,12 +6,14 @@ version: 2.1
 # See: https://circleci.com/docs/orb-intro/
 orbs:
   # See the Node orb documentation here: https://circleci.com/developer/orbs/orb/circleci/node
+  aws-cli: circleci/aws-cli@4.0.0
+  aws-ecs: circleci/aws-ecs@4.0.0
   node: circleci/node@5.2
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
 jobs:
-  build_image:
+  build_and_push_image:
     docker:
       - image: cimg/node:lts
     resource_class: small
@@ -19,11 +21,13 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: docker build -t dderyldowney/docker-react:latest -f Dockerfile.dev .
-          
+      - run: docker login --user ${DOCKER_USER} --password ${DOCKER_PASS} ${DOCKER_REPO}
+      - run: docker build --tag ghcr.io/${DOCKER_USER}/docker-react:circleci -f Dockerfile.dev .
+      - run: docker push ${DOCKER_REPO}/${DOCKER_USER}/docker-react:circleci
+
   npm_run_test:
     docker:
-      - image: dderyldowney/docker-react:latest
+      - image: ${DOCKER_REPO}/${DOCKER_USER}/docker-react:circleci
     resource_class: small
     steps:
       - checkout
@@ -34,25 +38,16 @@ jobs:
   
   npm_run_build:
     docker:
-      - image: dderyldowney/docker-react:latest
+      - image: ${DOCKER_REPO}/${DOCKER_USER}/docker-react:circleci
     resource_class: small
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: npm
       - run: npm run build
-
-  self_hosted_runner:
-    docker:
-      - image: cimg/base:current
-    resource_class: small
-    steps:
-      - run: echo "Hi I'm on a Container Runner!"
-
 workflows:
   test_react_app:
     jobs:
-      - self_hosted_runner
-      - build_image
+      - build_and_push_image
       - npm_run_test
       - npm_run_build
